@@ -1,1 +1,50 @@
 <Title>onError</Title>
+
+Registers an error handler method that executes when child scope errors. Only the nearest scope error handlers execute. If you want an upper error handler to catch the error, you must rethrow it from the child.
+
+## How To Import
+
+```javascript
+import { onError } from "solid-js";
+```
+
+## TypeScript Function Signature
+
+```typescript
+function onError(fn: (err: any) => void): void;
+```
+
+### Example
+
+You can use this method to send the error to a monitoring solution.
+
+```jsx
+import { onError } from "solid-js";
+
+const App = () => {
+  onError((error) => {
+    monitoringService.sendError(error);
+  });
+  //...
+};
+```
+
+If you want to catch errors in an upper scope, rethrow the error.
+
+```jsx
+import { onError } from "solid-js";
+
+const Child = () => {
+  // We don't  want to handle the error in this component
+  onError((error) => {
+    throw new Error(error);
+  });
+};
+
+const App = () => {
+  onError((error) => {
+    monitoringService.sendError(error);
+  });
+  return <Child />;
+};
+```
